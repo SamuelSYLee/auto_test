@@ -5,6 +5,7 @@
 #include "PhidgetHelperFunctions.h"
 #include <time.h>
 #include <stdbool.h>
+#include <assert.h>
 #pragma warning(disable: 4996)
 
 #define _TEST_MODE_ENABLE		0	//Test mode or not
@@ -399,6 +400,7 @@ int main() {
 	ChannelInfo channelInfo_L;
 	ChannelInfo channelInfo_B;
 	PhidgetReturnCode prc; //Used to catch error codes from each Phidget function call
+	char filename[30];
 
 	/*
 	* Allocate a new Phidget Channel object
@@ -621,7 +623,14 @@ int main() {
 	*/
 	Initialization();
 	AskExecuteTime();
-	fp = fopen("Information.csv", "w");
+
+	//-------Log File Setting-------
+	nowtime = time(NULL);
+	timeinfo = localtime(&nowtime);
+	sprintf(filename, "Log_%d%d%d_%d%d%d.csv", timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday,
+		timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+	fp = fopen(filename, "w");
+	assert(fp != NULL);
 
 	while (clock() <= endclock)
 	{
